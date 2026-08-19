@@ -378,6 +378,19 @@ button:active {
 }
 
 /* =====================================================
+   Scientific calculator — compact button override
+   (5-column grid needs 54×46 px to fit without overlap)
+   ===================================================== */
+#scientificScreen .calc-btn {
+  width:  54px !important;
+  height: 46px !important;
+  font-size: 1.1em !important;
+}
+#scientificScreen .calc-btn-sci {
+  font-size: 0.9em !important;
+}
+
+/* =====================================================
    Small screen adjustments
    ===================================================== */
 @media (max-width: 360px) {
