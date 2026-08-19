@@ -2,50 +2,71 @@ var sceneHome = function(p) {
   p.preload = function() {
     myFont = p.loadFont("assets/GlacialIndifference-Regular.otf");
   }
+
   var playButton;
+  var tutorialButton;
 
   p.setup = function() {
     p.createCanvas(p.displayWidth, p.displayHeight);
-    p.background('#ccffff')
-    p.fill('black');
+    p.background('#f5f7fa');
+    p.noLoop();
 
-    playButton = p.createButton('Play').position(p.displayWidth / 2 - 25, p.displayHeight - 400)
-    playButton.style('width', '70px')
-      .style('height', '35px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1em")
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border', 'none')
-      .style('border-radius', '4px')
+    var cx = p.displayWidth / 2;
+    var midY = p.displayHeight / 2;
+
+    // Play button — centred, pill-shaped, finger-friendly
+    playButton = p.createButton('▶  Play')
+      .position(cx - 100, midY - 10)
+      .addClass('btn-hero')
+      .attribute('aria-label', 'Play the game')
       .touchStarted(switchToLevels);
 
-    tutorialButton = p.createButton('Tutorial').position(p.displayWidth / 2 - 25, p.displayHeight - 350)
-    tutorialButton.style('width', '70px')
-      .style('height', '35px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1em")
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border', 'none')
-      .style('border-radius', '4px')
+    // Tutorial button
+    tutorialButton = p.createButton('? Tutorial')
+      .position(cx - 100, midY + 66)
+      .addClass('btn-hero')
+      .attribute('aria-label', 'How to play')
       .touchStarted(tutorial);
-    p.noLoop();
   }
-  p.draw = function() {
-    //Title
-    p.textSize(30);
-    p.textFont(myFont)
-    p.text('Broken Calculators', (p.displayWidth / 2) - 120, (p.displayHeight / 2) - 200);
 
+  p.draw = function() {
+    p.background('#f5f7fa');
+
+    var cx = p.displayWidth / 2;
+    var midY = p.displayHeight / 2;
+
+    // Large bold title
+    p.fill('#4361ee');
+    p.noStroke();
+    p.textFont(myFont);
+    p.textStyle(p.BOLD);
+    p.textSize(38);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.text('Broken', cx, midY - 200);
+    p.text('Calculators', cx, midY - 155);
+
+    // Emoji decoration
+    p.textSize(52);
+    p.text('🧮', cx, midY - 100);
+
+    // Sub-text
+    p.textStyle(p.NORMAL);
+    p.fill('#6c757d');
+    p.textSize(16);
+    p.textWrap(p.WORD);
+    p.text('Can you reach the target\nwith a broken calculator?', cx, midY - 52, p.displayWidth - 60);
+
+    p.textAlign(p.LEFT, p.BASELINE);
   }
 
   function switchToLevels() {
-    document.getElementById('homeScreen').style.display = 'none'
-    document.getElementById('levelsScreen').style.display = 'block'
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('levelsScreen').style.display = 'block';
   }
+
   function tutorial() {
-    document.getElementById('tutorialScreen').style.display = 'block'
-    document.getElementById('homeScreen').style.display = 'none'
+    document.getElementById('tutorialScreen').style.display = 'block';
+    document.getElementById('homeScreen').style.display = 'none';
   }
 }
+

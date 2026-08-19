@@ -1,31 +1,388 @@
+/* =====================================================
+   CSS Custom Properties — change here to retheme
+   ===================================================== */
+:root {
+  --color-bg:          #f5f7fa;
+  --color-primary:     #4361ee;
+  --color-primary-dark:#3451d1;
+  --color-accent:      #f72585;
+  --color-success:     #4caf50;
+  --color-broken-bg:   #ffcccc;
+  --color-broken-fg:   #e63946;
+  --color-operator-bg: #4361ee;
+  --color-operator-fg: #ffffff;
+  --color-calc-face:   #ffffff;
+  --color-display-bg:  #1a1a2e;
+  --color-display-fg:  #00e676;
+  --color-bar:         #ffffff;
+  --color-text:        #1a1a2e;
+  --color-muted:       #6c757d;
+  --color-completed:   #4caf50;
+
+  --radius-btn:   25px;
+  --radius-card:  20px;
+  --radius-small: 8px;
+
+  --shadow-btn:  0 4px 14px rgba(67,97,238,0.35);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.12);
+
+  --font-base: 'GlacialIndifference', sans-serif;
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+/* =====================================================
+   Font face
+   ===================================================== */
+@font-face {
+  font-family: 'GlacialIndifference';
+  src: url('../assets/GlacialIndifference-Regular.otf') format('opentype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'GlacialIndifference';
+  src: url('../assets/GlacialIndifference-Bold.otf') format('opentype');
+  font-weight: 700;
+}
+
+/* =====================================================
+   Reset / Base
+   ===================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
+  background: var(--color-bg);
+  font-family: var(--font-base);
+  color: var(--color-text);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 canvas {
-  margin: auto;
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
+  display: block;
+  margin: 0;
 }
 
-#homeScreen {
-  display:block;
+/* =====================================================
+   Screen containers
+   ===================================================== */
+#homeScreen     { display: block; }
+#levelsScreen   { display: none;  }
+#levelsScreen1  { display: none;  }
+#levelsScreen2  { display: none;  }
+#calculatorScreen { display: none; }
+#tutorialScreen { display: none;  }
+
+/* =====================================================
+   Shared button base (applied via JS .addClass)
+   ===================================================== */
+button {
+  font-family: var(--font-base);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  -webkit-transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
 }
-#levelsScreen {
-  display:none;
+button:active {
+  transform: scale(0.95);
 }
-#levelsScreen1 {
-  display:none;
+
+/* =====================================================
+   Nav / action buttons
+   ===================================================== */
+.btn-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px !important;
+  min-width: 90px !important;
+  padding: 0 18px;
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  font-size: 1em !important;
+  font-family: var(--font-base) !important;
+  border: none !important;
+  border-radius: var(--radius-btn) !important;
+  box-shadow: var(--shadow-btn) !important;
 }
-#levelsScreen2 {
-  display:none;
+.btn-nav:active {
+  background-color: var(--color-primary-dark) !important;
 }
-#calculatorScreen{
-  display:none;
+
+/* =====================================================
+   Calculator key buttons
+   ===================================================== */
+.calc-btn {
+  width: 64px !important;
+  height: 64px !important;
+  font-size: 1.5em !important;
+  font-family: var(--font-base) !important;
+  background-color: #f0f0f0 !important;
+  color: var(--color-text) !important;
+  border: none !important;
+  border-radius: var(--radius-small) !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+  text-align: center !important;
 }
-#tutorialScreen{
-  display:none;
+.calc-btn:active {
+  transform: scale(0.92) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.calc-btn-operator {
+  background-color: var(--color-operator-bg) !important;
+  color: var(--color-operator-fg) !important;
+  box-shadow: 0 3px 6px rgba(67,97,238,0.3) !important;
+}
+
+.calc-btn-equals {
+  background-color: var(--color-success) !important;
+  color: #fff !important;
+  box-shadow: 0 3px 6px rgba(76,175,80,0.35) !important;
+}
+
+.calc-btn-ce {
+  background-color: #ff9800 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 6px rgba(255,152,0,0.35) !important;
+}
+
+.calc-btn-broken {
+  background-color: var(--color-broken-bg) !important;
+  color: var(--color-broken-fg) !important;
+  text-decoration: line-through !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  opacity: 0.8 !important;
+}
+.calc-btn-broken:active {
+  transform: none !important;
+}
+
+/* =====================================================
+   Level grid buttons
+   ===================================================== */
+.level-btn {
+  width: 90px !important;
+  height: 90px !important;
+  font-size: 1.6em !important;
+  font-family: var(--font-base) !important;
+  background-color: #e0e0e0 !important;
+  color: var(--color-text) !important;
+  border: none !important;
+  border-radius: var(--radius-small) !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1) !important;
+}
+.level-btn:active {
+  transform: scale(0.93) !important;
+}
+.level-btn-completed {
+  background-color: var(--color-completed) !important;
+  color: #fff !important;
+  box-shadow: 0 3px 8px rgba(76,175,80,0.4) !important;
+}
+
+/* =====================================================
+   Home screen play/tutorial buttons
+   ===================================================== */
+.btn-hero {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 200px !important;
+  height: 56px !important;
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  font-size: 1.2em !important;
+  font-family: var(--font-base) !important;
+  border: none !important;
+  border-radius: var(--radius-btn) !important;
+  box-shadow: var(--shadow-btn) !important;
+  letter-spacing: 0.03em !important;
+}
+.btn-hero:active {
+  background-color: var(--color-primary-dark) !important;
+  box-shadow: 0 2px 6px rgba(67,97,238,0.25) !important;
+}
+
+/* =====================================================
+   Congrats overlay
+   ===================================================== */
+#congratsOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,46,0.75);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+#congratsOverlay.active {
+  display: flex;
+}
+#congratsCard {
+  background: #fff;
+  border-radius: var(--radius-card);
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  max-width: 320px;
+  width: 88%;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+#congratsCard h2 {
+  font-family: var(--font-base);
+  font-size: 2em;
+  color: var(--color-primary);
+  margin: 0 0 8px;
+}
+#congratsCard p {
+  font-family: var(--font-base);
+  font-size: 1.1em;
+  color: var(--color-muted);
+  margin: 0 0 28px;
+}
+#congratsCard .stars {
+  font-size: 2.2em;
+  letter-spacing: 6px;
+  margin-bottom: 20px;
+}
+#congratsContinue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 36px;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-base);
+  font-size: 1.1em;
+  border: none;
+  border-radius: var(--radius-btn);
+  box-shadow: var(--shadow-btn);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+#congratsContinue:active {
+  background: var(--color-primary-dark);
+  transform: scale(0.95);
+}
+
+/* =====================================================
+   Animations
+   ===================================================== */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+@keyframes starPop {
+  0%   { transform: scale(1);   }
+  50%  { transform: scale(1.5); }
+  100% { transform: scale(1);   }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0);    }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px);  }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px);  }
+}
+
+.shake {
+  animation: shake 0.4s ease both;
+}
+
+/* =====================================================
+   Score stars
+   ===================================================== */
+.score-star {
+  display: inline-block;
+  font-size: 1.8em;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+.score-star.earned {
+  color: var(--color-accent);
+  animation: starPop 0.4s ease both;
+}
+
+/* =====================================================
+   Tutorial step cards
+   ===================================================== */
+.tutorial-screen-inner {
+  padding: 60px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tutorial-step {
+  background: #fff;
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.tutorial-step-icon {
+  font-size: 2em;
+  flex-shrink: 0;
+}
+.tutorial-step-text h3 {
+  font-family: var(--font-base);
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+}
+.tutorial-step-text p {
+  font-family: var(--font-base);
+  font-size: 0.95em;
+  color: var(--color-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   Progress bar on level screens
+   ===================================================== */
+.progress-bar-wrap {
+  width: 100%;
+  background: #e0e0e0;
+  border-radius: 10px;
+  height: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.progress-bar-fill {
+  height: 10px;
+  background: var(--color-primary);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+/* =====================================================
+   Small screen adjustments
+   ===================================================== */
+@media (max-width: 360px) {
+  .level-btn {
+    width: 75px !important;
+    height: 75px !important;
+    font-size: 1.3em !important;
+  }
+  .calc-btn {
+    width: 54px !important;
+    height: 54px !important;
+    font-size: 1.2em !important;
+  }
+  .btn-hero {
+    width: 170px !important;
+    height: 50px !important;
+    font-size: 1.05em !important;
+  }
 }
