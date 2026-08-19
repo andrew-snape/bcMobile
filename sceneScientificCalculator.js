@@ -219,9 +219,18 @@ var sceneScientificCalculator = function(p) {
       shakeInput();
       return;
     }
-    // Round to avoid floating-point noise (up to 10 significant digits)
-    var rounded = parseFloat(result.toPrecision(10));
-    p.sciInput.value(rounded);
+    p.sciInput.value(formatResult(result));
+  }
+
+  // ── Result formatter ─────────────────────────────────
+  function formatResult(n) {
+    var abs = Math.abs(n);
+    // Very large or very small: keep scientific notation but trim to 6 sig-figs
+    if (abs !== 0 && (abs >= 1e10 || abs < 1e-6)) {
+      return n.toExponential(5).replace(/\.?0+e/, 'e');
+    }
+    // Normal range: remove floating-point noise, strip trailing zeros
+    return parseFloat(n.toPrecision(10)).toString();
   }
 
   // ── Shake animation ───────────────────────────────────
