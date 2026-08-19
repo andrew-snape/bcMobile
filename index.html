@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
-	<title>brokencalc</title>
+	<title>Broken Calculators</title>
+	<link rel="preload" href="assets/GlacialIndifference-Regular.otf" as="font" type="font/otf" crossorigin>
+	<link rel="preload" href="assets/GlacialIndifference-Bold.otf" as="font" type="font/otf" crossorigin>
 	<link rel="stylesheet" href="css/style.css">
 	<script src="libraries/p5.js"></script>
 	<script src="libraries/p5.dom.js"></script>
@@ -26,6 +28,16 @@
 	<div id="levelsScreen2"></div>
 	<div id="tutorialScreen"></div>
 	<div id="calculatorScreen"></div>
+
+	<!-- Congratulations overlay (shown by sceneCalculator when all 3 solutions found) -->
+	<div id="congratsOverlay" role="dialog" aria-modal="true" aria-labelledby="congratsTitle">
+		<div id="congratsCard">
+			<div class="stars" aria-hidden="true">⭐⭐⭐</div>
+			<h2 id="congratsTitle">Well done!</h2>
+			<p>You found all 3 solutions.<br>Ready for the next level?</p>
+			<button id="congratsContinue">Continue →</button>
+		</div>
+	</div>
 
 </body>
 

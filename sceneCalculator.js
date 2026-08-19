@@ -2,292 +2,272 @@
 var sceneCalculator = function(p) {
   p.calcButtons = [];
   p.calcInput;
-  p.brokenKeys = ['7', '8']
+  p.brokenKeys = ['7', '8'];
   p.level = 1;
   p.target = 2;
-  var targElem;
   var backButton;
-  var levelElem;
   p.score = 0;
   p.moveHistory = [];
 
-  p.clearMoveHistory = function(){
+  // DOM elements for header info
+  var headerDiv;
+  var scoreDiv;
+
+  p.clearMoveHistory = function() {
     p.moveHistory = [];
-  }
+  };
 
   p.setup = function() {
     p.createCanvas(p.displayWidth, p.displayHeight);
-    p.background('#ccffff');
-    p.calcButtons.push(p.calcInput = p.createInput('').position(60, 200))
-    makeBackButton();
+    p.background('#f5f7fa');
+    p.noStroke();
+
+    buildHeader();
+    buildScoreBar();
     p.makeCalcButtons();
     p.makeBrokenKeys();
-    levelElem = p.createDiv("Level " + p.level).position(20, 18);
-    levelElem.style("font-size", "1.4em");
-    targElem = p.createDiv("Target " + p.target).position(150, 60);
-    targElem.style("font-size", "1.4em");
-    makeScoreBar();
-    //make calc background
+    buildBackButton();
+    buildCongratsHandler();
+  };
+
+  p.draw = function() {
+    // Redraw background + card each frame
+    p.background('#f5f7fa');
+
+    // Calculator card shadow/face
+    var cardX = p.displayWidth / 2 - 160;
+    var cardY = 160;
+    var cardW = 320;
+    var cardH = 380;
+
+    // Shadow
     p.noStroke();
-    p.fill("#3399ff")
-    p.rect(50,190,280,350,10)
+    p.fill(0, 0, 0, 25);
+    p.rect(cardX + 4, cardY + 8, cardW, cardH, 20);
 
-    //draw menu bar
+    // White card face
+    p.fill('#ffffff');
+    p.rect(cardX, cardY, cardW, cardH, 20);
 
-    p.noStroke()
-    p.fill('lightgrey');
-    p.rect(0, 0, p.displayWidth, 50);
+    // Update header text
+    if (headerDiv) {
+      headerDiv.html(
+        '<span class="hdr-level">Level ' + p.level + '</span>' +
+        '<span class="hdr-target">Target: <strong>' + p.target + '</strong></span>'
+      );
+    }
 
+    // Update stars
+    updateScoreBar();
+  };
 
+  // ── Header bar ──────────────────────────────────────
+  function buildHeader() {
+    headerDiv = p.createDiv('')
+      .position(0, 0)
+      .style('width', p.displayWidth + 'px')
+      .style('height', '56px')
+      .style('background', '#ffffff')
+      .style('box-shadow', '0 2px 8px rgba(0,0,0,0.10)')
+      .style('display', 'flex')
+      .style('align-items', 'center')
+      .style('justify-content', 'space-between')
+      .style('padding', '0 20px')
+      .style('font-family', "'GlacialIndifference',sans-serif")
+      .style('font-size', '1.1em')
+      .style('color', '#1a1a2e')
+      .style('z-index', '10');
   }
 
-  p.draw = function(){
-
-    targElem.html('Target ' + p.target)
-    levelElem.html('Level '+ p.level)
-    makeScoreBar();
-    if (p.score === 1){
-      p.fill('pink');
-      p.noStroke();
-      p.ellipse(70,120,15,15);
-    }
-    if (p.score === 2){
-      p.fill('pink');
-      p.noStroke();
-      p.ellipse(70,120,15,15);
-      p.ellipse(190,120,15,15);
-    }
-    if (p.score === 3){
-      p.fill('pink');
-      p.noStroke();
-      p.ellipse(70,120,15,15);
-      p.ellipse(190,120,15,15);
-      p.ellipse(310,120,15,15);
-      localStorage.setItem('level'+p.level, true);
-    }
-    changeLevels();
-  }
-
-  function makeScoreBar(){
-    p.noStroke();
-    p.fill('black');
-    p.ellipse(70,120,15,15);
-    p.ellipse(190,120,15,15);
-    p.ellipse(310,120,15,15);
-  }
-
-  function changeLevels(){
-    if (p.score === 3){
-      //change alpha on level screen via localhost
-      if (p.level===35){
-        level35();
-      }else if (p.level===34){
-        level35();
-      }else if (p.level===33){
-        level34();
-      }else if (p.level===32){
-        level33();
-      }else if (p.level===31){
-        level32();
-      }else if (p.level===30){
-        level31();
-      }else if (p.level===29){
-        level30();
-      }else if (p.level===28){
-        level29();
-      }else if (p.level===27){
-        level28();
-      }else if (p.level===26){
-        level27();
-      }else if (p.level===25){
-        level26();
-      }else if (p.level===24){
-        level25();
-      }else if (p.level===23){
-        level24();
-      }else if (p.level===22){
-        level23();
-      }else if (p.level===21){
-        level22();
-      }else if (p.level===20){
-        level21();
-      }else if (p.level===19){
-        level20();
-      }else if (p.level===18){
-        level19();
-      }else if (p.level===17){
-        level18();
-      }else if (p.level===16){
-        level17();
-      }else if (p.level===15){
-        level16();
-      }else if (p.level===14){
-        level15();
-      }else if (p.level===13){
-        level14();
-      }else if (p.level===12){
-        level13();
-      }else if (p.level===11){
-        level12();
-      }else if (p.level===10){
-        level11();
-      }else if (p.level===9){
-        level10();
-      }else if (p.level===8){
-        level9();
-      }else if (p.level===7){
-        level8();
-      }else if (p.level===6){
-        level7();
-      }else if (p.level===5){
-        level6();
-      }else if (p.level===4){
-        level5();
-      }else if (p.level===3){
-        level4();
-      }else if (p.level===2){
-        level3();
-      }else if (p.level===1){
-        level2();
-      }
-    }
-  }
-
-  function makeBackButton(){
-    backButton = p.createButton('Back').position((p.displayWidth / 2) + 80, 13)
-    backButton.style('height', '30px')
-      .style('width', '90px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1em")
-      .style('font', myFont)
+  // ── Score / star bar ─────────────────────────────────
+  function buildScoreBar() {
+    scoreDiv = p.createDiv('')
+      .position(p.displayWidth / 2 - 80, 70)
+      .style('width', '160px')
       .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border', 'none')
-      .style('border-radius', '4px')
+      .style('font-size', '2em')
+      .style('letter-spacing', '8px');
+    updateScoreBar();
+  }
+
+  function updateScoreBar() {
+    if (!scoreDiv) return;
+    var html = '';
+    for (var i = 0; i < 3; i++) {
+      var cls = i < p.score ? 'score-star earned' : 'score-star';
+      html += '<span class="' + cls + '" aria-label="' + (i < p.score ? 'star earned' : 'star not yet earned') + '">★</span>';
+    }
+    scoreDiv.html(html);
+  }
+
+  // ── Back button ──────────────────────────────────────
+  function buildBackButton() {
+    backButton = p.createButton('← Back')
+      .position(p.displayWidth - 110, 8)
+      .addClass('btn-nav')
+      .attribute('aria-label', 'Back to level select')
       .touchStarted(back);
   }
 
-
+  // ── Calculator buttons ───────────────────────────────
   p.makeCalcButtons = function() {
-    p.calcButtons.push(p.createButton('7').position(60, 270));
-    p.calcButtons.push(p.createButton('8').position(130, 270));
-    p.calcButtons.push(p.createButton('9').position(200, 270));
-    p.calcButtons.push(p.createButton('/').position(270, 270));
-    p.calcButtons.push(p.createButton('4').position(60, 340));
-    p.calcButtons.push(p.createButton('5').position(130, 340));
-    p.calcButtons.push(p.createButton('6').position(200, 340));
-    p.calcButtons.push(p.createButton('*').position(270, 340));
-    p.calcButtons.push(p.createButton('1').position(60, 410));
-    p.calcButtons.push(p.createButton('2').position(130, 410));
-    p.calcButtons.push(p.createButton('3').position(200, 410));
-    p.calcButtons.push(p.createButton('-').position(270, 410));
-    p.calcButtons.push(p.createButton('CE').position(60, 480));
-    p.calcButtons.push(p.createButton('0').position(130, 480));
-    p.calcButtons.push(p.createButton('=').position(200, 480));
-    p.calcButtons.push(p.createButton('+').position(270, 480));
+    var cx = p.displayWidth / 2;
+    var startX = cx - 150;
+    var inputY = 175;
+    var row1Y = 245, row2Y = 319, row3Y = 393, row4Y = 467;
+    var col = [startX, startX + 74, startX + 148, startX + 222];
 
-    p.calcInput.style('width', '225px')
-      .style('height', '35px')
-      .style('background-color', "white")
-      .style("font-size", "2em")
-      .style("align-content", "left")
-      .style('border', 'none');
-
-
-    for (let i = 0; i < p.calcButtons.length; i++) {
-      p.calcButtons[i].style('width', '50px')
+    // Display input
+    p.calcButtons.push(
+      p.calcInput = p.createInput('')
+        .position(startX + 4, inputY)
+        .attribute('aria-label', 'calculator display')
+        .attribute('readonly', '')
+        .style('width', '286px')
         .style('height', '50px')
-        .style('background-color', "white")
-        .style('font-size', '1.4em')
-        .style('text-align', 'center')
-        .style('border-radius', '4px')
+        .style('background', '#1a1a2e')
+        .style('color', '#00e676')
+        .style('font-size', '1.8em')
+        .style('font-family', "'Courier New',monospace")
+        .style('text-align', 'right')
+        .style('padding', '0 12px')
         .style('border', 'none')
-        .mousePressed(add);
+        .style('border-radius', '10px')
+        .style('outline', 'none')
+    );
+
+    // Row 1: 7 8 9 /
+    p.calcButtons.push(p.createButton('7').position(col[0], row1Y).attribute('aria-label', '7').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('8').position(col[1], row1Y).attribute('aria-label', '8').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('9').position(col[2], row1Y).attribute('aria-label', '9').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('÷').position(col[3], row1Y).attribute('aria-label', 'divide').addClass('calc-btn calc-btn-operator'));
+    // Row 2: 4 5 6 *
+    p.calcButtons.push(p.createButton('4').position(col[0], row2Y).attribute('aria-label', '4').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('5').position(col[1], row2Y).attribute('aria-label', '5').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('6').position(col[2], row2Y).attribute('aria-label', '6').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('×').position(col[3], row2Y).attribute('aria-label', 'multiply').addClass('calc-btn calc-btn-operator'));
+    // Row 3: 1 2 3 -
+    p.calcButtons.push(p.createButton('1').position(col[0], row3Y).attribute('aria-label', '1').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('2').position(col[1], row3Y).attribute('aria-label', '2').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('3').position(col[2], row3Y).attribute('aria-label', '3').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('−').position(col[3], row3Y).attribute('aria-label', 'minus').addClass('calc-btn calc-btn-operator'));
+    // Row 4: CE 0 = +
+    p.calcButtons.push(p.createButton('CE').position(col[0], row4Y).attribute('aria-label', 'clear').addClass('calc-btn calc-btn-ce'));
+    p.calcButtons.push(p.createButton('0').position(col[1], row4Y).attribute('aria-label', '0').addClass('calc-btn'));
+    p.calcButtons.push(p.createButton('=').position(col[2], row4Y).attribute('aria-label', 'equals').addClass('calc-btn calc-btn-equals'));
+    p.calcButtons.push(p.createButton('+').position(col[3], row4Y).attribute('aria-label', 'plus').addClass('calc-btn calc-btn-operator'));
+
+    // Wire up input behaviour
+    // buttons index mapping: 0=input, 1=7,2=8,3=9,4=/, 5=4,6=5,7=6,8=*, 9=1,10=2,11=3,12=-, 13=CE,14=0,15==,16=+
+    for (var i = 1; i <= 16; i++) {
+      p.calcButtons[i].mousePressed(add);
     }
-    p.calcButtons[12].mousePressed(zeroed)
-    p.calcButtons[14].mousePressed(equals)
-  }
+    p.calcButtons[13].mousePressed(zeroed);
+    p.calcButtons[15].mousePressed(equals);
+  };
 
   function add() {
-    p.calcInput.value(p.calcInput.value() + this.html());
+    // Map display characters back to eval-safe operators
+    var label = this.html();
+    var val = label === '÷' ? '/' : label === '×' ? '*' : label === '−' ? '-' : label;
+    p.calcInput.value(p.calcInput.value() + val);
   }
+
   function zeroed() {
-    p.calcInput.value("");
+    p.calcInput.value('');
   }
+
   function equals() {
-    var value = eval(p.calcInput.value());
-    if (value == p.target && p.moveHistory.indexOf(p.calcInput.value()) === -1) {
+    var expr = p.calcInput.value();
+    var value;
+    try {
+      value = eval(expr); // jshint ignore:line
+    } catch(e) {
+      shakeInput();
+      return;
+    }
+    if (value == p.target && p.moveHistory.indexOf(expr) === -1) {
       p.score += 1;
-      p.moveHistory.push(p.calcInput.value());
+      p.moveHistory.push(expr);
       zeroed();
+      updateScoreBar();
+      if (p.score === 3) {
+        localStorage.setItem('level' + p.level, true);
+        showCongrats();
+      }
     } else {
       p.calcInput.value(value);
+      shakeInput();
     }
   }
+
+  function shakeInput() {
+    var el = p.calcInput.elt;
+    el.classList.remove('shake');
+    // Force reflow so re-adding the class triggers animation
+    void el.offsetWidth;
+    el.classList.add('shake');
+    el.addEventListener('animationend', function() {
+      el.classList.remove('shake');
+    }, { once: true });
+  }
+
   function donothing() {}
 
+  // ── Broken keys ──────────────────────────────────────
+  // Index mapping to key label for brokenKeys lookup:
+  var keyMap = [null,'7','8','9','/','4','5','6','*','1','2','3','-',null,'0',null,'+'];
 
   p.makeBrokenKeys = function() {
-    if (p.brokenKeys.indexOf('7') !== -1) {
-      p.calcButtons[0].style('background-color', '#0000cc')
-        .mousePressed(donothing);
+    for (var i = 1; i <= 16; i++) {
+      var k = keyMap[i];
+      if (k && p.brokenKeys.indexOf(k) !== -1) {
+        p.calcButtons[i]
+          .removeClass('calc-btn-operator')
+          .removeClass('calc-btn-equals')
+          .addClass('calc-btn-broken')
+          .attribute('aria-label', k + ' – broken key, unavailable')
+          .attribute('aria-disabled', 'true')
+          .attribute('disabled', '')
+          .mousePressed(donothing);
+      }
     }
-    if (p.brokenKeys.indexOf('8') !== -1) {
-      p.calcButtons[1].style('background-color', '#0000cc')
-        .mousePressed(donothing);
+  };
+
+  // ── Congrats overlay ─────────────────────────────────
+  function buildCongratsHandler() {
+    var btn = document.getElementById('congratsContinue');
+    if (btn) {
+      btn.addEventListener('click', hideCongrats);
+      btn.addEventListener('touchstart', hideCongrats, { passive: true });
     }
-    if (p.brokenKeys.indexOf('9') !== -1) {
-      p.calcButtons[2].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('/') !== -1) {
-      p.calcButtons[3].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('4') !== -1) {
-      p.calcButtons[4].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('5') !== -1) {
-      p.calcButtons[5].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('6') !== -1) {
-      p.calcButtons[6].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('*') !== -1) {
-      p.calcButtons[7].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('1') !== -1) {
-      p.calcButtons[8].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('2') !== -1) {
-      p.calcButtons[9].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('3') !== -1) {
-      p.calcButtons[10].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('-') !== -1) {
-      p.calcButtons[11].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('0') !== -1) {
-      p.calcButtons[13].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
-    if (p.brokenKeys.indexOf('+') !== -1) {
-      p.calcButtons[15].style('background-color', '#0000cc')
-        .mousePressed(donothing);
-    }
+  }
+
+  function showCongrats() {
+    var overlay = document.getElementById('congratsOverlay');
+    if (overlay) overlay.classList.add('active');
+  }
+
+  function hideCongrats() {
+    var overlay = document.getElementById('congratsOverlay');
+    if (overlay) overlay.classList.remove('active');
+    changeLevels();
+  }
+
+  // ── Auto advance ─────────────────────────────────────
+  function changeLevels() {
+    var next = p.level < 35 ? p.level + 1 : 35;
+    if (p.level === 35) { level35(); return; }
+    var fns = [null,level1,level2,level3,level4,level5,level6,level7,level8,level9,level10,
+               level11,level12,level13,level14,level15,level16,level17,level18,level19,level20,
+               level21,level22,level23,level24,level25,level26,level27,level28,level29,level30,
+               level31,level32,level33,level34,level35];
+    if (fns[next]) fns[next]();
   }
 
   function back() {
-    document.getElementById('levelsScreen').style.display = 'block'
-    document.getElementById('calculatorScreen').style.display = 'none'
+    document.getElementById('levelsScreen').style.display = 'block';
+    document.getElementById('calculatorScreen').style.display = 'none';
   }
-}
+};
+

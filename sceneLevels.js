@@ -1,207 +1,143 @@
 var sceneLevels = function(p) {
   var grid = [];
-  p.mousePressed = function() {
-    return false
-  }
+  var TOTAL_LEVELS = 36;
+  var PAGE_START = 1;
+  var PAGE_SIZE = 12;
+
+  p.mousePressed = function() { return false; };
   p.level = 0;
-  var backButton;
-  var tutorialButton;
-  var nextButton;
-  var numberOfLevels = 15;
+
+  var progressDiv;
+  var progressBarDiv;
 
   p.preload = function() {
     myFont = p.loadFont("assets/GlacialIndifference-Regular.otf");
-  }
+  };
 
   p.setup = function() {
     p.createCanvas(p.displayWidth, p.displayHeight);
-    p.background('#ccffff');
-    createButtons();
+    p.background('#f5f7fa');
+
+    createNavButtons();
+    createProgressBar();
     createLevels();
 
-
-    //menu bar
-    p.noStroke()
-    p.fill('lightgrey');
-    p.rect(0, 0, p.displayWidth, 50);
-
-    p.fill('black')
-    p.textSize(20);
+    // Header bar
+    p.noStroke();
+    p.fill('#ffffff');
+    p.rect(0, 0, p.displayWidth, 56);
+    p.fill('#4361ee');
     p.textFont(myFont);
-    p.text('Levels', (p.displayWidth / 2) - 22, 35);
-    nextButton = p.createButton('Next').position(250,520).touchStarted(next)
-    nextButton.style('height', '30px')
-      .style('width', '90px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1em")
-      .style('font', myFont)
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border-radius', '4px')
-      .style('border', 'none')
-
-  }
+    p.textSize(22);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.text('Levels', p.displayWidth / 2, 28);
+    p.textAlign(p.LEFT, p.BASELINE);
+  };
 
   p.draw = function() {
-    if (localStorage.level1 === 'true'){
-      grid[0].style('background-color', '#ff6666')
+    // Update completed level colours
+    for (var i = 0; i < grid.length; i++) {
+      var lvl = PAGE_START + i;
+      if (localStorage['level' + lvl] === 'true') {
+        grid[i].addClass('level-btn-completed');
+      }
     }
-    if (localStorage.level2 === 'true'){
-      grid[1].style('background-color', '#ff6666')
+    // Update progress bar
+    updateProgress();
+  };
+
+  function countCompleted() {
+    var count = 0;
+    for (var i = 1; i <= TOTAL_LEVELS; i++) {
+      if (localStorage['level' + i] === 'true') count++;
     }
-    if (localStorage.level3 === 'true'){
-      grid[2].style('background-color', '#3366ff')
-    }
-    if (localStorage.level4 === 'true'){
-      grid[3].style('background-color', '#3366ff')
-    }
-    if (localStorage.level5 === 'true'){
-      grid[4].style('background-color', '#3366ff')
-    }
-    if (localStorage.level6 === 'true'){
-      grid[5].style('background-color', '#3366ff')
-    }
-    if (localStorage.level7 === 'true'){
-      grid[6].style('background-color', '#3366ff')
-    }
-    if (localStorage.level8 === 'true'){
-      grid[7].style('background-color', '#3366ff')
-    }
-    if (localStorage.level9 === 'true'){
-      grid[8].style('background-color', '#3366ff')
-    }
-    if (localStorage.level10 === 'true'){
-      grid[9].style('background-color', '#3366ff')
-    }
-    if (localStorage.level11 === 'true'){
-      grid[10].style('background-color', '#3366ff')
-    }
-    if (localStorage.level12 === 'true'){
-      grid[11].style('background-color', '#3366ff')
+    return count;
+  }
+
+  function createProgressBar() {
+    var completed = countCompleted();
+    var pct = Math.round((completed / TOTAL_LEVELS) * 100);
+
+    progressDiv = p.createDiv('Levels completed: <strong>' + completed + ' / ' + TOTAL_LEVELS + '</strong>')
+      .position(20, 62)
+      .style('font-family', "'GlacialIndifference',sans-serif")
+      .style('font-size', '0.9em')
+      .style('color', '#6c757d')
+      .style('width', (p.displayWidth - 40) + 'px');
+
+    progressBarDiv = p.createDiv('<div class="progress-bar-fill" style="width:' + pct + '%"></div>')
+      .position(20, 80)
+      .addClass('progress-bar-wrap')
+      .style('width', (p.displayWidth - 40) + 'px');
+  }
+
+  function updateProgress() {
+    var completed = countCompleted();
+    var pct = Math.round((completed / TOTAL_LEVELS) * 100);
+    if (progressDiv) progressDiv.html('Levels completed: <strong>' + completed + ' / ' + TOTAL_LEVELS + '</strong>');
+    if (progressBarDiv) {
+      var fill = progressBarDiv.elt.querySelector('.progress-bar-fill');
+      if (fill) fill.style.width = pct + '%';
     }
   }
 
-
-
-
-  function createButtons() {
-
-    backButton = p.createButton('Back').position((p.displayWidth / 2) - 140, 13)
-    backButton.style('height', '30px')
-      .style('width', '90px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1.2em")
-      .style('font', myFont)
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border', 'none')
-      .style('border-radius', '4px')
+  function createNavButtons() {
+    p.createButton('← Back')
+      .position(20, 8)
+      .addClass('btn-nav')
+      .attribute('aria-label', 'Back to home')
       .touchStarted(back);
 
+    p.createButton('Next →')
+      .position(p.displayWidth - 110, 8)
+      .addClass('btn-nav')
+      .attribute('aria-label', 'Next page of levels')
+      .touchStarted(next);
   }
 
   function createLevels() {
-    grid.push(p.createButton(1).position(0 * 110 + 30, Math.floor(0 / 3) * 110 + 70).touchStarted(switchScreen1));
-    grid.push(p.createButton(2).position(1 * 110 + 30, Math.floor(1 / 3) * 110 + 70).touchStarted(switchScreen2));
-    grid.push(p.createButton(3).position(2 * 110 + 30, Math.floor(2 / 3) * 110 + 70).touchStarted(switchScreen3));
-    grid.push(p.createButton(4).position(0 * 110 + 30, Math.floor(3 / 3) * 110 + 70).touchStarted(switchScreen4));
-    grid.push(p.createButton(5).position(1 * 110 + 30, Math.floor(4 / 3) * 110 + 70).touchStarted(switchScreen5));
-    grid.push(p.createButton(6).position(2 * 110 + 30, Math.floor(5 / 3) * 110 + 70).touchStarted(switchScreen6));
-    grid.push(p.createButton(7).position(0 * 110 + 30, Math.floor(6 / 3) * 110 + 70).touchStarted(switchScreen7));
-    grid.push(p.createButton(8).position(1 * 110 + 30, Math.floor(7 / 3) * 110 + 70).touchStarted(switchScreen8));
-    grid.push(p.createButton(9).position(2 * 110 + 30, Math.floor(8 / 3) * 110 + 70).touchStarted(switchScreen9));
-    grid.push(p.createButton(10).position(0 * 110 + 30, Math.floor(9 / 3) * 110 + 70).touchStarted(switchScreen10));
-    grid.push(p.createButton(11).position(1 * 110 + 30, Math.floor(10 / 3) * 110 + 70).touchStarted(switchScreen11));
-    grid.push(p.createButton(12).position(2 * 110 + 30, Math.floor(11 / 3) * 110 + 70).touchStarted(switchScreen12));
+    var cols = 3;
+    var btnSize = 90;
+    var gap = 10;
+    var gridW = cols * btnSize + (cols - 1) * gap;
+    var startX = (p.displayWidth - gridW) / 2;
+    var startY = 100;
 
-    for (i = 0; i < grid.length; i++) {
-      string = "switchScreen" + i
-      grid[i]
-        .style('height', '100px')
-        .style('width', '100px')
-        .style('font', myFont)
-        .style('font-size', '2em')
-        .style('background-color', "lightgrey")
-        .style('text-align', 'center')
-        .style("align-content", "right")
-        .style('border', 'none')
-        .style('border-radius', '4px')
-
+    for (var i = 0; i < PAGE_SIZE; i++) {
+      var lvl = PAGE_START + i;
+      var col = i % cols;
+      var row = Math.floor(i / cols);
+      var x = startX + col * (btnSize + gap);
+      var y = startY + row * (btnSize + gap);
+      (function(lvlNum) {
+        var btn = p.createButton(lvlNum)
+          .position(x, y)
+          .addClass('level-btn')
+          .attribute('aria-label', 'Level ' + lvlNum)
+          .touchStarted(function() { launchLevel(lvlNum); });
+        if (localStorage['level' + lvlNum] === 'true') {
+          btn.addClass('level-btn-completed');
+        }
+        grid.push(btn);
+      })(lvl);
     }
   }
 
-  function switchScreen1() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level1();
-
+  function launchLevel(n) {
+    document.getElementById('levelsScreen').style.display = 'none';
+    document.getElementById('calculatorScreen').style.display = 'block';
+    var fns = [null,level1,level2,level3,level4,level5,level6,level7,level8,level9,level10,level11,level12];
+    if (fns[n]) fns[n]();
   }
-  function switchScreen2() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level2();
-  }
-  function switchScreen3() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level3();
-  }
-  function switchScreen4() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level4();
-  }
-  function switchScreen5() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level5();
-  }
-  function switchScreen6() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level6();
-  }
-  function switchScreen7() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level7();
-  }
-  function switchScreen8() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level8();
-  }
-  function switchScreen9() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level9();
-  }
-  function switchScreen10() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level10();
-  }
-  function switchScreen11() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level11();
-  }
-  function switchScreen12() {
-    document.getElementById("levelsScreen").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level12();
-  }
-
 
   function back() {
-    document.getElementById('homeScreen').style.display = 'block'
-    document.getElementById('levelsScreen').style.display = 'none'
+    document.getElementById('homeScreen').style.display = 'block';
+    document.getElementById('levelsScreen').style.display = 'none';
   }
 
-  function next(){
-    document.getElementById('levelsScreen1').style.display = 'block'
-    document.getElementById('levelsScreen').style.display = 'none'
+  function next() {
+    document.getElementById('levelsScreen1').style.display = 'block';
+    document.getElementById('levelsScreen').style.display = 'none';
   }
+};
 
-
-}

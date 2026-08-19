@@ -1,210 +1,130 @@
 var sceneLevels2 = function(p) {
   var grid = [];
-  p.mousePressed = function() {
-    return false
-  }
+  var TOTAL_LEVELS = 36;
+  var PAGE_START = 25;
+  var PAGE_SIZE = 12;
+
+  p.mousePressed = function() { return false; };
   p.level = 0;
-  var backButton;
-  var tutorialButton;
-  var numberOfLevels = 15;
-  var nextButton;
+
+  var progressDiv;
+  var progressBarDiv;
 
   p.preload = function() {
     myFont = p.loadFont("assets/GlacialIndifference-Regular.otf");
-  }
+  };
 
   p.setup = function() {
     p.createCanvas(p.displayWidth, p.displayHeight);
-    p.background('#ccffff');
-    createButtons();
+    p.background('#f5f7fa');
+
+    createNavButtons();
+    createProgressBar();
     createLevels();
-    nextButton = p.createButton('Next').position(250,520).touchStarted(next)
-    nextButton.style('height', '30px')
-      .style('width', '90px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1em")
-      .style('font', myFont)
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border-radius', '4px')
-      .style('border', 'none')
 
-
-    //menu bar
-    p.noStroke()
-    p.fill('lightgrey');
-    p.rect(0, 0, p.displayWidth, 50);
-
-    p.fill('black')
-    p.textSize(20);
+    p.noStroke();
+    p.fill('#ffffff');
+    p.rect(0, 0, p.displayWidth, 56);
+    p.fill('#4361ee');
     p.textFont(myFont);
-    p.text('Levels', (p.displayWidth / 2) - 22, 35);
-  }
+    p.textSize(22);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.text('Levels', p.displayWidth / 2, 28);
+    p.textAlign(p.LEFT, p.BASELINE);
+  };
 
   p.draw = function() {
-    if (localStorage.level25 === 'true'){
-      grid[0].style('background-color', '#ff6666')
+    for (var i = 0; i < grid.length; i++) {
+      var lvl = PAGE_START + i;
+      if (localStorage['level' + lvl] === 'true') {
+        grid[i].addClass('level-btn-completed');
+      }
     }
-    if (localStorage.level26 === 'true'){
-      grid[1].style('background-color', '#ff6666')
+    updateProgress();
+  };
+
+  function countCompleted() {
+    var count = 0;
+    for (var i = 1; i <= TOTAL_LEVELS; i++) {
+      if (localStorage['level' + i] === 'true') count++;
     }
-    if (localStorage.level27 === 'true'){
-      grid[2].style('background-color', '#3366ff')
-    }
-    if (localStorage.level28 === 'true'){
-      grid[3].style('background-color', '#3366ff')
-    }
-    if (localStorage.level29 === 'true'){
-      grid[4].style('background-color', '#3366ff')
-    }
-    if (localStorage.level30 === 'true'){
-      grid[5].style('background-color', '#3366ff')
-    }
-    if (localStorage.level31 === 'true'){
-      grid[6].style('background-color', '#3366ff')
-    }
-    if (localStorage.level32 === 'true'){
-      grid[7].style('background-color', '#3366ff')
-    }
-    if (localStorage.level33 === 'true'){
-      grid[8].style('background-color', '#3366ff')
-    }
-    if (localStorage.level34 === 'true'){
-      grid[9].style('background-color', '#3366ff')
-    }
-    if (localStorage.level35 === 'true'){
-      grid[10].style('background-color', '#3366ff')
-    }
-    if (localStorage.level36 === 'true'){
-      grid[11].style('background-color', '#3366ff')
+    return count;
+  }
+
+  function createProgressBar() {
+    var completed = countCompleted();
+    var pct = Math.round((completed / TOTAL_LEVELS) * 100);
+
+    progressDiv = p.createDiv('Levels completed: <strong>' + completed + ' / ' + TOTAL_LEVELS + '</strong>')
+      .position(20, 62)
+      .style('font-family', "'GlacialIndifference',sans-serif")
+      .style('font-size', '0.9em')
+      .style('color', '#6c757d')
+      .style('width', (p.displayWidth - 40) + 'px');
+
+    progressBarDiv = p.createDiv('<div class="progress-bar-fill" style="width:' + pct + '%"></div>')
+      .position(20, 80)
+      .addClass('progress-bar-wrap')
+      .style('width', (p.displayWidth - 40) + 'px');
+  }
+
+  function updateProgress() {
+    var completed = countCompleted();
+    var pct = Math.round((completed / TOTAL_LEVELS) * 100);
+    if (progressDiv) progressDiv.html('Levels completed: <strong>' + completed + ' / ' + TOTAL_LEVELS + '</strong>');
+    if (progressBarDiv) {
+      var fill = progressBarDiv.elt.querySelector('.progress-bar-fill');
+      if (fill) fill.style.width = pct + '%';
     }
   }
 
-
-
-
-  function createButtons() {
-
-    backButton = p.createButton('Back').position((p.displayWidth / 2) - 140, 13)
-
-    backButton.style('height', '30px')
-      .style('width', '90px')
-      .style('background-color', "#3399ff")
-      .style("font-size", "1.2em")
-      .style('font', myFont)
-      .style('text-align', 'center')
-      .style("align-content", "right")
-      .style('border', 'none')
-      .style('border-radius', '4px')
+  function createNavButtons() {
+    p.createButton('← Back')
+      .position(20, 8)
+      .addClass('btn-nav')
+      .attribute('aria-label', 'Back to previous page')
       .touchStarted(back);
-
   }
 
   function createLevels() {
-    grid.push(p.createButton(25).position(0 * 110 + 30, Math.floor(0 / 3) * 110 + 70).touchStarted(switchScreen25));
-    grid.push(p.createButton(26).position(1 * 110 + 30, Math.floor(1 / 3) * 110 + 70).touchStarted(switchScreen26));
-    grid.push(p.createButton(27).position(2 * 110 + 30, Math.floor(2 / 3) * 110 + 70).touchStarted(switchScreen27));
-    grid.push(p.createButton(28).position(0 * 110 + 30, Math.floor(3 / 3) * 110 + 70).touchStarted(switchScreen28));
-    grid.push(p.createButton(29).position(1 * 110 + 30, Math.floor(4 / 3) * 110 + 70).touchStarted(switchScreen29));
-    grid.push(p.createButton(30).position(2 * 110 + 30, Math.floor(5 / 3) * 110 + 70).touchStarted(switchScreen30));
-    grid.push(p.createButton(31).position(0 * 110 + 30, Math.floor(6 / 3) * 110 + 70).touchStarted(switchScreen31));
-    grid.push(p.createButton(32).position(1 * 110 + 30, Math.floor(7 / 3) * 110 + 70).touchStarted(switchScreen32));
-    grid.push(p.createButton(33).position(2 * 110 + 30, Math.floor(8 / 3) * 110 + 70).touchStarted(switchScreen33));
-    grid.push(p.createButton(34).position(0 * 110 + 30, Math.floor(9 / 3) * 110 + 70).touchStarted(switchScreen34));
-    grid.push(p.createButton(35).position(1 * 110 + 30, Math.floor(10 / 3) * 110 + 70).touchStarted(switchScreen35));
-    grid.push(p.createButton(36).position(2 * 110 + 30, Math.floor(11 / 3) * 110 + 70).touchStarted(switchScreen36));
+    var cols = 3;
+    var btnSize = 90;
+    var gap = 10;
+    var gridW = cols * btnSize + (cols - 1) * gap;
+    var startX = (p.displayWidth - gridW) / 2;
+    var startY = 100;
 
-    for (i = 0; i < grid.length; i++) {
-      string = "switchScreen" + i
-      grid[i]
-        .style('height', '100px')
-        .style('width', '100px')
-        .style('font', myFont)
-        .style('font-size', '2em')
-        .style('background-color', "lightgrey")
-        .style('text-align', 'center')
-        .style("align-content", "right")
-        .style('border', 'none')
-        .style('border-radius', '4px')
-
+    for (var i = 0; i < PAGE_SIZE; i++) {
+      var lvl = PAGE_START + i;
+      var col = i % cols;
+      var row = Math.floor(i / cols);
+      var x = startX + col * (btnSize + gap);
+      var y = startY + row * (btnSize + gap);
+      (function(lvlNum) {
+        var btn = p.createButton(lvlNum)
+          .position(x, y)
+          .addClass('level-btn')
+          .attribute('aria-label', 'Level ' + lvlNum)
+          .touchStarted(function() { launchLevel(lvlNum); });
+        if (localStorage['level' + lvlNum] === 'true') {
+          btn.addClass('level-btn-completed');
+        }
+        grid.push(btn);
+      })(lvl);
     }
   }
-  function switchScreen25() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level25();
-  }
-  function switchScreen26() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level26();
-  }
-  function switchScreen27() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level27();
-  }
-  function switchScreen28() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level28();
-  }
-  function switchScreen29() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level29();
-  }
-  function switchScreen30() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level30();
-  }
-  function switchScreen31() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level20();
-  }
-  function switchScreen31() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level31();
-  }
-  function switchScreen32() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level32();
-  }
-  function switchScreen33() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level33();
-  }
-  function switchScreen34() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level34();
-  }
-  function switchScreen35() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level35();
-  }
-  function switchScreen36() {
-    document.getElementById("levelsScreen2").style.display = "none";
-    document.getElementById("calculatorScreen").style.display = "block";
-    level36();
-  }
 
-
-  function next(){
-    document.getElementById('levelsScreen1').style.display = 'block'
-    document.getElementById('levelsScreen').style.display = 'none'
+  function launchLevel(n) {
+    document.getElementById('levelsScreen2').style.display = 'none';
+    document.getElementById('calculatorScreen').style.display = 'block';
+    var fns = {25:level25,26:level26,27:level27,28:level28,29:level29,30:level30,
+               31:level31,32:level32,33:level33,34:level34,35:level35,36:level36};
+    if (fns[n]) fns[n]();
   }
 
   function back() {
-    document.getElementById('levelsScreen1').style.display = 'block'
-    document.getElementById('levelsScreen2').style.display = 'none'
+    document.getElementById('levelsScreen1').style.display = 'block';
+    document.getElementById('levelsScreen2').style.display = 'none';
   }
+};
 
-
-}
