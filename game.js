@@ -4,6 +4,7 @@ var levelsScreen1 = new p5(sceneLevels1,"levelsScreen1");
 var levelsScreen2 = new p5(sceneLevels2,"levelsScreen2");
 var tutorialScreen = new p5(sceneTutorial, "tutorialScreen");
 var calcScreen = new p5(sceneCalculator, "calculatorScreen");
+var sciScreen = new p5(sceneScientificCalculator, "scientificScreen");
 
 function level1(){
   calcScreen.calcButtons = [];

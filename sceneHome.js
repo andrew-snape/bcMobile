@@ -27,6 +27,13 @@ var sceneHome = function(p) {
       .addClass('btn-hero')
       .attribute('aria-label', 'How to play')
       .touchStarted(tutorial);
+
+    // Scientific calculator button
+    p.createButton('🔬 Scientific')
+      .position(cx - 100, midY + 142)
+      .addClass('btn-hero')
+      .attribute('aria-label', 'Open scientific calculator')
+      .touchStarted(openScientific);
   }
 
   p.draw = function() {
@@ -67,6 +74,11 @@ var sceneHome = function(p) {
   function tutorial() {
     document.getElementById('tutorialScreen').style.display = 'block';
     document.getElementById('homeScreen').style.display = 'none';
+  }
+
+  function openScientific() {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('scientificScreen').style.display = 'block';
   }
 }
 
