@@ -76,6 +76,7 @@ canvas {
 #levelsScreen1  { display: none;  }
 #levelsScreen2  { display: none;  }
 #calculatorScreen { display: none; }
+#scientificScreen { display: none; }
 #tutorialScreen { display: none;  }
 
 /* =====================================================
@@ -137,6 +138,16 @@ button:active {
   background-color: var(--color-operator-bg) !important;
   color: var(--color-operator-fg) !important;
   box-shadow: 0 3px 6px rgba(67,97,238,0.3) !important;
+}
+
+.calc-btn-sci {
+  background-color: #7b2d8b !important;
+  color: #ffffff !important;
+  font-size: 1em !important;
+  box-shadow: 0 3px 6px rgba(123,45,139,0.3) !important;
+}
+.calc-btn-sci:active {
+  background-color: #5a1f68 !important;
 }
 
 .calc-btn-equals {
