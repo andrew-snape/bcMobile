@@ -1,0 +1,35 @@
+{
+  "name": "broken-calculators",
+  "version": "1.0.0",
+  "description": "A challenging puzzle game where you must reach target numbers using a calculator with broken keys. 36 levels of mathematical problem-solving fun!",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server",
+    "dev": "npx http-server -c-1"
+  },
+  "keywords": [
+    "puzzle-game",
+    "p5js",
+    "javascript",
+    "game",
+    "educational",
+    "calculator",
+    "math-game",
+    "web-game",
+    "interactive"
+  ],
+  "author": "Andrew Snape",
+  "license": "MIT",
+  "dependencies": {
+    "p5": "^1.7.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andrew-snape/broken-calculators.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andrew-snape/broken-calculators/issues"
+  },
+  "homepage": "https://andrew-snape.github.io/broken-calculators"
+}
