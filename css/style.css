@@ -176,6 +176,146 @@ button:active {
 }
 
 /* =====================================================
+   Student calculator screen — phone calculator app look
+   ===================================================== */
+#calculatorScreen {
+  position: relative;
+  background: #1c1c1e;
+}
+
+.phone-calc-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-calc-topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px 6px;
+}
+
+.phone-calc-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 34px !important;
+  min-width: 74px !important;
+  padding: 0 14px !important;
+  background-color: #3a3a3c !important;
+  color: #ffffff !important;
+  font-size: 0.85em !important;
+  font-family: var(--font-base) !important;
+  border: none !important;
+  border-radius: 17px !important;
+  box-shadow: none !important;
+  flex: 0 0 auto;
+}
+
+.phone-calc-level {
+  flex: 1;
+  text-align: center;
+  color: #8e8e93;
+  font-family: var(--font-base);
+  font-size: clamp(0.8em, 3vw, 1em);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.phone-calc-level strong {
+  color: #ffffff;
+}
+
+.phone-calc-stars {
+  flex: 0 0 auto;
+  min-width: 74px;
+  text-align: right;
+  letter-spacing: 2px;
+}
+.phone-calc-stars .score-star {
+  font-size: clamp(0.85em, 3vw, 1.2em);
+}
+
+.phone-calc-display-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 24px 8px;
+  min-height: 0;
+}
+
+.phone-calc-display {
+  width: 100% !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  border: none !important;
+  outline: none !important;
+  text-align: right !important;
+  font-family: var(--font-mono) !important;
+  font-size: clamp(38px, 11vw, 76px) !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.phone-calc-grid {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(10px, 3vw, 18px);
+  padding: 0 16px 24px;
+}
+
+.phone-calc-btn {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  font-family: var(--font-base) !important;
+  font-size: clamp(20px, 6vw, 30px) !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.phone-calc-btn-op {
+  background-color: #ff9f0a !important;
+  color: #ffffff !important;
+}
+.phone-calc-btn-fn {
+  background-color: #a5a5a5 !important;
+  color: #000000 !important;
+}
+.phone-calc-btn-broken {
+  background-color: rgba(255, 69, 58, 0.18) !important;
+  color: #ff453a !important;
+  text-decoration: line-through !important;
+  cursor: not-allowed !important;
+}
+.phone-calc-btn-broken:active {
+  transform: none !important;
+}
+
+@media (max-width: 360px) {
+  .phone-calc-btn {
+    font-size: clamp(18px, 6vw, 26px) !important;
+  }
+}
+
+/* =====================================================
    Level grid buttons
    ===================================================== */
 .level-btn {

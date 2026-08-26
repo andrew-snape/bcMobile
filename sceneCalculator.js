@@ -9,9 +9,12 @@ var sceneCalculator = function(p) {
   p.score = 0;
   p.moveHistory = [];
 
-  // DOM elements for header info
-  var headerDiv;
+  // Persistent containers (built once, contents rebuilt per level)
+  var wrapDiv;
+  var levelTargetSpan;
   var scoreDiv;
+  var displayWrap;
+  var gridWrap;
 
   p.clearMoveHistory = function() {
     p.moveHistory = [];
@@ -19,74 +22,43 @@ var sceneCalculator = function(p) {
 
   p.setup = function() {
     p.createCanvas(p.windowWidth, p.windowHeight);
-    p.background('#f5f7fa');
+    p.background('#1c1c1e');
     p.noStroke();
 
-    buildHeader();
-    buildScoreBar();
+    buildLayout();
     p.makeCalcButtons();
     p.makeBrokenKeys();
-    buildBackButton();
     buildCongratsHandler();
   };
 
   p.draw = function() {
-    // Redraw background + card each frame
-    p.background('#f5f7fa');
+    p.background('#1c1c1e');
 
-    // Calculator card shadow/face
-    var cardX = p.windowWidth / 2 - 160;
-    var cardY = 160;
-    var cardW = 320;
-    var cardH = 380;
-
-    // Shadow
-    p.noStroke();
-    p.fill(0, 0, 0, 25);
-    p.rect(cardX + 4, cardY + 8, cardW, cardH, 20);
-
-    // White card face
-    p.fill('#ffffff');
-    p.rect(cardX, cardY, cardW, cardH, 20);
-
-    // Update header text
-    if (headerDiv) {
-      headerDiv.html(
-        '<span class="hdr-level">Level ' + p.level + '</span>' +
-        '<span class="hdr-target">Target: <strong>' + p.target + '</strong></span>'
-      );
+    if (levelTargetSpan) {
+      levelTargetSpan.html('Level ' + p.level + ' &nbsp;·&nbsp; Target: <strong>' + p.target + '</strong>');
     }
-
-    // Update stars
     updateScoreBar();
   };
 
-  // ── Header bar ──────────────────────────────────────
-  function buildHeader() {
-    headerDiv = p.createDiv('')
-      .position(0, 0)
-      .style('width', p.windowWidth + 'px')
-      .style('height', '56px')
-      .style('background', '#ffffff')
-      .style('box-shadow', '0 2px 8px rgba(0,0,0,0.10)')
-      .style('display', 'flex')
-      .style('align-items', 'center')
-      .style('justify-content', 'space-between')
-      .style('padding', '0 20px')
-      .style('font-family', "'GlacialIndifference',sans-serif")
-      .style('font-size', '1.1em')
-      .style('color', '#1a1a2e')
-      .style('z-index', '10');
-  }
+  // ── Layout shell (built once) ─────────────────────────
+  function buildLayout() {
+    wrapDiv = p.createDiv('').addClass('phone-calc-wrap');
 
-  // ── Score / star bar ─────────────────────────────────
-  function buildScoreBar() {
-    scoreDiv = p.createDiv('')
-      .position(p.windowWidth / 2 - 80, 70)
-      .style('width', '160px')
-      .style('text-align', 'center')
-      .style('font-size', '2em')
-      .style('letter-spacing', '8px');
+    var topbar = p.createDiv('').addClass('phone-calc-topbar').parent(wrapDiv);
+
+    backButton = p.createButton('← Back')
+      .addClass('phone-calc-back')
+      .parent(topbar)
+      .attribute('aria-label', 'Back to level select')
+      .touchStarted(back);
+
+    levelTargetSpan = p.createSpan('').addClass('phone-calc-level').parent(topbar);
+
+    scoreDiv = p.createDiv('').addClass('phone-calc-stars').parent(topbar);
+
+    displayWrap = p.createDiv('').addClass('phone-calc-display-wrap').parent(wrapDiv);
+    gridWrap = p.createDiv('').addClass('phone-calc-grid').parent(wrapDiv);
+
     updateScoreBar();
   }
 
@@ -100,62 +72,36 @@ var sceneCalculator = function(p) {
     scoreDiv.html(html);
   }
 
-  // ── Back button ──────────────────────────────────────
-  function buildBackButton() {
-    backButton = p.createButton('← Back')
-      .position(p.windowWidth - 110, 8)
-      .addClass('btn-nav')
-      .attribute('aria-label', 'Back to level select')
-      .touchStarted(back);
-  }
-
-  // ── Calculator buttons ───────────────────────────────
+  // ── Calculator buttons (rebuilt per level) ────────────
   p.makeCalcButtons = function() {
-    var cx = p.windowWidth / 2;
-    var startX = cx - 150;
-    var inputY = 175;
-    var row1Y = 245, row2Y = 319, row3Y = 393, row4Y = 467;
-    var col = [startX, startX + 74, startX + 148, startX + 222];
+    displayWrap.html('');
+    gridWrap.html('');
 
     // Display input
     p.calcButtons.push(
       p.calcInput = p.createInput('')
-        .position(startX + 4, inputY)
+        .addClass('phone-calc-display')
         .attribute('aria-label', 'calculator display')
         .attribute('readonly', '')
-        .style('width', '286px')
-        .style('height', '50px')
-        .style('background', '#1a1a2e')
-        .style('color', '#00e676')
-        .style('font-size', '1.8em')
-        .style('font-family', "'Courier New',monospace")
-        .style('text-align', 'right')
-        .style('padding', '0 12px')
-        .style('border', 'none')
-        .style('border-radius', '10px')
-        .style('outline', 'none')
+        .parent(displayWrap)
     );
 
-    // Row 1: 7 8 9 /
-    p.calcButtons.push(p.createButton('7').position(col[0], row1Y).attribute('aria-label', '7').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('8').position(col[1], row1Y).attribute('aria-label', '8').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('9').position(col[2], row1Y).attribute('aria-label', '9').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('÷').position(col[3], row1Y).attribute('aria-label', 'divide').addClass('calc-btn calc-btn-operator'));
-    // Row 2: 4 5 6 *
-    p.calcButtons.push(p.createButton('4').position(col[0], row2Y).attribute('aria-label', '4').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('5').position(col[1], row2Y).attribute('aria-label', '5').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('6').position(col[2], row2Y).attribute('aria-label', '6').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('×').position(col[3], row2Y).attribute('aria-label', 'multiply').addClass('calc-btn calc-btn-operator'));
-    // Row 3: 1 2 3 -
-    p.calcButtons.push(p.createButton('1').position(col[0], row3Y).attribute('aria-label', '1').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('2').position(col[1], row3Y).attribute('aria-label', '2').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('3').position(col[2], row3Y).attribute('aria-label', '3').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('−').position(col[3], row3Y).attribute('aria-label', 'minus').addClass('calc-btn calc-btn-operator'));
-    // Row 4: CE 0 = +
-    p.calcButtons.push(p.createButton('CE').position(col[0], row4Y).attribute('aria-label', 'clear').addClass('calc-btn calc-btn-ce'));
-    p.calcButtons.push(p.createButton('0').position(col[1], row4Y).attribute('aria-label', '0').addClass('calc-btn'));
-    p.calcButtons.push(p.createButton('=').position(col[2], row4Y).attribute('aria-label', 'equals').addClass('calc-btn calc-btn-equals'));
-    p.calcButtons.push(p.createButton('+').position(col[3], row4Y).attribute('aria-label', 'plus').addClass('calc-btn calc-btn-operator'));
+    var keyDefs = [
+      { label: '7' }, { label: '8' }, { label: '9' }, { label: '÷', op: true, aria: 'divide' },
+      { label: '4' }, { label: '5' }, { label: '6' }, { label: '×', op: true, aria: 'multiply' },
+      { label: '1' }, { label: '2' }, { label: '3' }, { label: '−', op: true, aria: 'minus' },
+      { label: 'CE', fn: true, aria: 'clear' }, { label: '0' }, { label: '=', eq: true, aria: 'equals' }, { label: '+', op: true, aria: 'plus' }
+    ];
+
+    keyDefs.forEach(function(def) {
+      var btn = p.createButton(def.label)
+        .addClass('phone-calc-btn')
+        .parent(gridWrap)
+        .attribute('aria-label', def.aria || def.label);
+      if (def.op || def.eq) btn.addClass('phone-calc-btn-op');
+      if (def.fn) btn.addClass('phone-calc-btn-fn');
+      p.calcButtons.push(btn);
+    });
 
     // Wire up input behaviour
     // buttons index mapping: 0=input, 1=7,2=8,3=9,4=/, 5=4,6=5,7=6,8=*, 9=1,10=2,11=3,12=-, 13=CE,14=0,15==,16=+
@@ -223,9 +169,9 @@ var sceneCalculator = function(p) {
       var k = keyMap[i];
       if (k && p.brokenKeys.indexOf(k) !== -1) {
         p.calcButtons[i]
-          .removeClass('calc-btn-operator')
-          .removeClass('calc-btn-equals')
-          .addClass('calc-btn-broken')
+          .removeClass('phone-calc-btn-op')
+          .removeClass('phone-calc-btn-fn')
+          .addClass('phone-calc-btn-broken')
           .attribute('aria-label', k + ' – broken key, unavailable')
           .attribute('aria-disabled', 'true')
           .attribute('disabled', '')
@@ -270,4 +216,3 @@ var sceneCalculator = function(p) {
     document.getElementById('calculatorScreen').style.display = 'none';
   }
 };
-
