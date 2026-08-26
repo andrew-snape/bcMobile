@@ -12,7 +12,7 @@ var sceneScientificCalculator = function(p) {
 
   // ── Setup ─────────────────────────────────────────────
   p.setup = function() {
-    p.createCanvas(p.displayWidth, p.displayHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.background('#f5f7fa');
     p.noStroke();
 
@@ -44,9 +44,9 @@ var sceneScientificCalculator = function(p) {
 
   // ── Layout ────────────────────────────────────────────
   function recalcLayout() {
-    CX = p.displayWidth / 2;
+    CX = p.windowWidth / 2;
 
-    CARD_W = Math.min(360, p.displayWidth - 20);
+    CARD_W = Math.min(360, p.windowWidth - 20);
     BTN_W  = 54;
     BTN_H  = 46;
     GAP    = 8;
@@ -81,7 +81,7 @@ var sceneScientificCalculator = function(p) {
   // ── Back button ───────────────────────────────────────
   function buildBackButton() {
     backButton = p.createButton('← Back')
-      .position(p.displayWidth - 110, 3)
+      .position(p.windowWidth - 110, 3)
       .addClass('btn-nav')
       .attribute('aria-label', 'Back to home')
       .touchStarted(goBack);

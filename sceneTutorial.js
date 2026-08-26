@@ -5,19 +5,19 @@ var sceneTutorial = function(p) {
   };
 
   p.setup = function() {
-    p.createCanvas(p.displayWidth, p.displayHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.background('#f5f7fa');
     p.noLoop();
 
     // Header bar
     p.noStroke();
     p.fill('#ffffff');
-    p.rect(0, 0, p.displayWidth, 56);
+    p.rect(0, 0, p.windowWidth, 56);
     p.fill('#4361ee');
     p.textFont(myFont);
     p.textSize(22);
     p.textAlign(p.CENTER, p.CENTER);
-    p.text('How to Play', p.displayWidth / 2, 28);
+    p.text('How to Play', p.windowWidth / 2, 28);
     p.textAlign(p.LEFT, p.BASELINE);
 
     // Back button
@@ -31,7 +31,7 @@ var sceneTutorial = function(p) {
     var wrapper = p.createDiv('')
       .addClass('tutorial-screen-inner')
       .position(0, 56)
-      .style('width', p.displayWidth + 'px');
+      .style('width', p.windowWidth + 'px');
 
     wrapper.html(
       '<div class="tutorial-step">' +

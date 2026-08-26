@@ -7,12 +7,12 @@ var sceneHome = function(p) {
   var tutorialButton;
 
   p.setup = function() {
-    p.createCanvas(p.displayWidth, p.displayHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.background('#f5f7fa');
     p.noLoop();
 
-    var cx = p.displayWidth / 2;
-    var midY = p.displayHeight / 2;
+    var cx = p.windowWidth / 2;
+    var midY = p.windowHeight / 2;
 
     // Play button — centred, pill-shaped, finger-friendly
     playButton = p.createButton('▶  Play')
@@ -34,13 +34,20 @@ var sceneHome = function(p) {
       .addClass('btn-hero')
       .attribute('aria-label', 'Open scientific calculator')
       .touchStarted(openScientific);
+
+    // Teacher warm-up button
+    p.createButton('📺 Warm-Up')
+      .position(cx - 100, midY + 218)
+      .addClass('btn-hero')
+      .attribute('aria-label', 'Open teacher warm-up screen')
+      .touchStarted(openWarmup);
   }
 
   p.draw = function() {
     p.background('#f5f7fa');
 
-    var cx = p.displayWidth / 2;
-    var midY = p.displayHeight / 2;
+    var cx = p.windowWidth / 2;
+    var midY = p.windowHeight / 2;
 
     // Large bold title
     p.fill('#4361ee');
@@ -61,7 +68,7 @@ var sceneHome = function(p) {
     p.fill('#6c757d');
     p.textSize(16);
     p.textWrap(p.WORD);
-    p.text('Can you reach the target\nwith a broken calculator?', cx, midY - 52, p.displayWidth - 60);
+    p.text('Can you reach the target\nwith a broken calculator?', cx, midY - 52, p.windowWidth - 60);
 
     p.textAlign(p.LEFT, p.BASELINE);
   }
@@ -79,6 +86,11 @@ var sceneHome = function(p) {
   function openScientific() {
     document.getElementById('homeScreen').style.display = 'none';
     document.getElementById('scientificScreen').style.display = 'block';
+  }
+
+  function openWarmup() {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('warmupScreen').style.display = 'block';
   }
 }
 

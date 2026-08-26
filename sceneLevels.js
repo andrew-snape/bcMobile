@@ -15,7 +15,7 @@ var sceneLevels = function(p) {
   };
 
   p.setup = function() {
-    p.createCanvas(p.displayWidth, p.displayHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.background('#f5f7fa');
 
     createNavButtons();
@@ -25,12 +25,12 @@ var sceneLevels = function(p) {
     // Header bar
     p.noStroke();
     p.fill('#ffffff');
-    p.rect(0, 0, p.displayWidth, 56);
+    p.rect(0, 0, p.windowWidth, 56);
     p.fill('#4361ee');
     p.textFont(myFont);
     p.textSize(22);
     p.textAlign(p.CENTER, p.CENTER);
-    p.text('Levels', p.displayWidth / 2, 28);
+    p.text('Levels', p.windowWidth / 2, 28);
     p.textAlign(p.LEFT, p.BASELINE);
   };
 
@@ -63,12 +63,12 @@ var sceneLevels = function(p) {
       .style('font-family', "'GlacialIndifference',sans-serif")
       .style('font-size', '0.9em')
       .style('color', '#6c757d')
-      .style('width', (p.displayWidth - 40) + 'px');
+      .style('width', (p.windowWidth - 40) + 'px');
 
     progressBarDiv = p.createDiv('<div class="progress-bar-fill" style="width:' + pct + '%"></div>')
       .position(20, 80)
       .addClass('progress-bar-wrap')
-      .style('width', (p.displayWidth - 40) + 'px');
+      .style('width', (p.windowWidth - 40) + 'px');
   }
 
   function updateProgress() {
@@ -89,7 +89,7 @@ var sceneLevels = function(p) {
       .touchStarted(back);
 
     p.createButton('Next →')
-      .position(p.displayWidth - 110, 8)
+      .position(p.windowWidth - 110, 8)
       .addClass('btn-nav')
       .attribute('aria-label', 'Next page of levels')
       .touchStarted(next);
@@ -100,7 +100,7 @@ var sceneLevels = function(p) {
     var btnSize = 90;
     var gap = 10;
     var gridW = cols * btnSize + (cols - 1) * gap;
-    var startX = (p.displayWidth - gridW) / 2;
+    var startX = (p.windowWidth - gridW) / 2;
     var startY = 100;
 
     for (var i = 0; i < PAGE_SIZE; i++) {

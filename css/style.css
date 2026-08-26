@@ -78,6 +78,7 @@ canvas {
 #calculatorScreen { display: none; }
 #scientificScreen { display: none; }
 #tutorialScreen { display: none;  }
+#warmupScreen   { display: none;  }
 
 /* =====================================================
    Shared button base (applied via JS .addClass)
@@ -388,6 +389,220 @@ button:active {
 }
 #scientificScreen .calc-btn-sci {
   font-size: 0.9em !important;
+}
+
+/* =====================================================
+   Teacher warm-up screen — big-screen / projector layout
+   ===================================================== */
+#warmupScreen {
+  position: relative;
+  overflow: hidden;
+}
+
+.warmup-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--color-bar);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  z-index: 10;
+}
+.warmup-title {
+  font-family: var(--font-base);
+  font-weight: 700;
+  font-size: clamp(1.1em, 2.2vw, 1.6em);
+  color: var(--color-primary);
+}
+
+.warmup-main {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 24px;
+  padding: 24px;
+  overflow: auto;
+}
+
+.warmup-panel-left,
+.warmup-panel-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.warmup-panel-left {
+  flex: 0 0 36%;
+  justify-content: center;
+}
+.warmup-panel-right {
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.warmup-panel-label {
+  font-family: var(--font-base);
+  font-weight: 700;
+  font-size: clamp(1.2em, 2.6vw, 1.9em);
+  color: var(--color-text);
+}
+
+.warmup-select-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.warmup-select-caption {
+  font-family: var(--font-base);
+  font-size: clamp(0.9em, 1.4vw, 1.1em);
+  color: var(--color-muted);
+  margin-right: 4px;
+}
+.warmup-select-btn {
+  width: clamp(40px, 4.5vw, 56px) !important;
+  height: clamp(40px, 4.5vw, 56px) !important;
+  font-size: clamp(1em, 1.8vw, 1.3em) !important;
+  font-family: var(--font-base) !important;
+  background-color: #e0e0e0 !important;
+  color: var(--color-text) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+}
+.warmup-select-btn.selected {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-btn) !important;
+}
+
+.warmup-target-display {
+  font-family: var(--font-base);
+  font-weight: 700;
+  font-size: clamp(70px, 12vw, 220px);
+  line-height: 1;
+  color: var(--color-text);
+  background: var(--color-calc-face);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 0.15em 0.5em;
+  min-width: 2.2em;
+  text-align: center;
+}
+
+.warmup-action-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: clamp(48px, 6vh, 64px) !important;
+  padding: 0 clamp(18px, 2.4vw, 30px) !important;
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  font-size: clamp(1em, 1.8vw, 1.3em) !important;
+  font-family: var(--font-base) !important;
+  border: none !important;
+  border-radius: var(--radius-btn) !important;
+  box-shadow: var(--shadow-btn) !important;
+  letter-spacing: 0.02em !important;
+}
+.warmup-action-btn:active {
+  background-color: var(--color-primary-dark) !important;
+}
+.warmup-action-btn-small {
+  height: clamp(40px, 5vh, 52px) !important;
+  font-size: clamp(0.85em, 1.4vw, 1.05em) !important;
+}
+.warmup-action-btn-secondary {
+  background-color: #6c757d !important;
+  box-shadow: 0 4px 14px rgba(108,117,125,0.35) !important;
+}
+.warmup-action-btn-secondary:active {
+  background-color: #565e64 !important;
+}
+.warmup-action-btn-active {
+  background-color: var(--color-accent) !important;
+  box-shadow: 0 4px 14px rgba(247,37,133,0.4) !important;
+}
+
+.warmup-calc-card {
+  background: var(--color-calc-face);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: clamp(16px, 2vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.warmup-calc-display {
+  width: 100% !important;
+  height: clamp(56px, 8vh, 90px) !important;
+  background: var(--color-display-bg) !important;
+  color: var(--color-display-fg) !important;
+  font-size: clamp(1.6em, 3.2vw, 2.6em) !important;
+  font-family: var(--font-mono) !important;
+  text-align: right !important;
+  padding: 0 20px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+}
+.warmup-calc-display.warmup-correct {
+  box-shadow: 0 0 0 4px var(--color-success), 0 0 24px rgba(76,175,80,0.7) !important;
+}
+
+.warmup-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 1.2vw, 16px);
+}
+#warmupScreen .warmup-calc-grid .calc-btn {
+  width: 100% !important;
+  height: clamp(56px, 9vh, 96px) !important;
+  font-size: clamp(1.3em, 2.6vw, 2em) !important;
+  position: static !important;
+}
+
+.warmup-break-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.warmup-break-btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.warmup-instruction {
+  font-family: var(--font-base);
+  font-size: clamp(0.9em, 1.4vw, 1.1em);
+  color: var(--color-accent);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .warmup-main {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .warmup-panel-left,
+  .warmup-panel-right {
+    flex: none;
+    width: 100%;
+  }
 }
 
 /* =====================================================

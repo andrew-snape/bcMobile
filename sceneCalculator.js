@@ -18,7 +18,7 @@ var sceneCalculator = function(p) {
   };
 
   p.setup = function() {
-    p.createCanvas(p.displayWidth, p.displayHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
     p.background('#f5f7fa');
     p.noStroke();
 
@@ -35,7 +35,7 @@ var sceneCalculator = function(p) {
     p.background('#f5f7fa');
 
     // Calculator card shadow/face
-    var cardX = p.displayWidth / 2 - 160;
+    var cardX = p.windowWidth / 2 - 160;
     var cardY = 160;
     var cardW = 320;
     var cardH = 380;
@@ -65,7 +65,7 @@ var sceneCalculator = function(p) {
   function buildHeader() {
     headerDiv = p.createDiv('')
       .position(0, 0)
-      .style('width', p.displayWidth + 'px')
+      .style('width', p.windowWidth + 'px')
       .style('height', '56px')
       .style('background', '#ffffff')
       .style('box-shadow', '0 2px 8px rgba(0,0,0,0.10)')
@@ -82,7 +82,7 @@ var sceneCalculator = function(p) {
   // ── Score / star bar ─────────────────────────────────
   function buildScoreBar() {
     scoreDiv = p.createDiv('')
-      .position(p.displayWidth / 2 - 80, 70)
+      .position(p.windowWidth / 2 - 80, 70)
       .style('width', '160px')
       .style('text-align', 'center')
       .style('font-size', '2em')
@@ -103,7 +103,7 @@ var sceneCalculator = function(p) {
   // ── Back button ──────────────────────────────────────
   function buildBackButton() {
     backButton = p.createButton('← Back')
-      .position(p.displayWidth - 110, 8)
+      .position(p.windowWidth - 110, 8)
       .addClass('btn-nav')
       .attribute('aria-label', 'Back to level select')
       .touchStarted(back);
@@ -111,7 +111,7 @@ var sceneCalculator = function(p) {
 
   // ── Calculator buttons ───────────────────────────────
   p.makeCalcButtons = function() {
-    var cx = p.displayWidth / 2;
+    var cx = p.windowWidth / 2;
     var startX = cx - 150;
     var inputY = 175;
     var row1Y = 245, row2Y = 319, row3Y = 393, row4Y = 467;
