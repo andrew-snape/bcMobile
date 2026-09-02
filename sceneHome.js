@@ -74,8 +74,7 @@ var sceneHome = function(p) {
     p.textStyle(p.NORMAL);
     p.fill('#6c757d');
     p.textSize(16);
-    p.textWrap(p.WORD);
-    p.text('Can you reach the target\nwith a broken calculator?', cx, midY - 52, p.windowWidth - 60);
+    p.text('Can you reach the target\nwith a broken calculator?', 30, midY - 52, p.windowWidth - 60);
 
     p.textAlign(p.LEFT, p.BASELINE);
   }
