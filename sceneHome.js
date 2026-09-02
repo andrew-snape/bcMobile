@@ -23,28 +23,28 @@ var sceneHome = function(p) {
 
     // Tutorial button
     tutorialButton = p.createButton('? Tutorial')
-      .position(cx - 100, midY + 66)
+      .position(cx - 100, midY + 54)
       .addClass('btn-hero')
       .attribute('aria-label', 'How to play')
       .touchStarted(tutorial);
 
     // Scientific calculator button
     p.createButton('🔬 Scientific')
-      .position(cx - 100, midY + 142)
+      .position(cx - 100, midY + 118)
       .addClass('btn-hero')
       .attribute('aria-label', 'Open scientific calculator')
       .touchStarted(openScientific);
 
     // Challenge Packs button
     p.createButton('🧠 Challenge Packs')
-      .position(cx - 100, midY + 218)
+      .position(cx - 100, midY + 182)
       .addClass('btn-hero')
       .attribute('aria-label', 'Open harder challenge packs')
       .touchStarted(openChallengeHub);
 
     // Teacher warm-up button
     p.createButton('📺 Warm-Up')
-      .position(cx - 100, midY + 294)
+      .position(cx - 100, midY + 246)
       .addClass('btn-hero')
       .attribute('aria-label', 'Open teacher warm-up screen')
       .touchStarted(openWarmup);
