@@ -35,9 +35,16 @@ var sceneHome = function(p) {
       .attribute('aria-label', 'Open scientific calculator')
       .touchStarted(openScientific);
 
+    // Challenge Packs button
+    p.createButton('🧠 Challenge Packs')
+      .position(cx - 100, midY + 218)
+      .addClass('btn-hero')
+      .attribute('aria-label', 'Open harder challenge packs')
+      .touchStarted(openChallengeHub);
+
     // Teacher warm-up button
     p.createButton('📺 Warm-Up')
-      .position(cx - 100, midY + 218)
+      .position(cx - 100, midY + 294)
       .addClass('btn-hero')
       .attribute('aria-label', 'Open teacher warm-up screen')
       .touchStarted(openWarmup);
@@ -86,6 +93,11 @@ var sceneHome = function(p) {
   function openScientific() {
     document.getElementById('homeScreen').style.display = 'none';
     document.getElementById('scientificScreen').style.display = 'block';
+  }
+
+  function openChallengeHub() {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('challengeHubScreen').style.display = 'block';
   }
 
   function openWarmup() {

@@ -79,6 +79,8 @@ canvas {
 #scientificScreen { display: none; }
 #tutorialScreen { display: none;  }
 #warmupScreen   { display: none;  }
+#challengeHubScreen    { display: none; }
+#challengeLevelsScreen { display: none; }
 
 /* =====================================================
    Shared button base (applied via JS .addClass)
@@ -336,6 +338,43 @@ button:active {
   background-color: var(--color-completed) !important;
   color: #fff !important;
   box-shadow: 0 3px 8px rgba(76,175,80,0.4) !important;
+}
+
+/* =====================================================
+   Challenge Pack hub cards
+   ===================================================== */
+.challenge-card {
+  background: #ffffff;
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 18px 20px;
+  margin-bottom: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.challenge-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.challenge-card-title {
+  font-family: var(--font-base);
+  font-weight: 700;
+  font-size: 1.15em;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+.challenge-card-desc {
+  font-family: var(--font-base);
+  font-size: 0.9em;
+  color: var(--color-muted);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.challenge-card-progress {
+  font-family: var(--font-base);
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--color-completed);
 }
 
 /* =====================================================

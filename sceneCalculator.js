@@ -5,6 +5,11 @@ var sceneCalculator = function(p) {
   p.brokenKeys = ['7', '8'];
   p.level = 1;
   p.target = 2;
+  p.extraKeys = [];     // e.g. ['.'], ['(',')','±'], ['(',')','^','√'] — Challenge Pack levels only
+  p.storageKey = null;  // overrides the default 'level' + p.level localStorage key
+  p.levelLabel = null;  // overrides the default 'Level ' + p.level topbar text
+  p.onComplete = null;  // called instead of the legacy changeLevels() chain on a 3-star win
+  p.backTarget = null;  // overrides the default 'levelsScreen' Back destination
   var backButton;
   p.score = 0;
   p.moveHistory = [];
@@ -15,6 +20,7 @@ var sceneCalculator = function(p) {
   var scoreDiv;
   var displayWrap;
   var gridWrap;
+  var keyButtons = {}; // canonical key -> button, rebuilt per level
 
   p.clearMoveHistory = function() {
     p.moveHistory = [];
@@ -35,7 +41,7 @@ var sceneCalculator = function(p) {
     p.background('#1c1c1e');
 
     if (levelTargetSpan) {
-      levelTargetSpan.html('Level ' + p.level + ' &nbsp;·&nbsp; Target: <strong>' + p.target + '</strong>');
+      levelTargetSpan.html((p.levelLabel || ('Level ' + p.level)) + ' &nbsp;·&nbsp; Target: <strong>' + p.target + '</strong>');
     }
     updateScoreBar();
   };
@@ -72,10 +78,24 @@ var sceneCalculator = function(p) {
     scoreDiv.html(html);
   }
 
+  // Extra keys available to Challenge Pack levels, keyed by the same
+  // canonical string used in brokenKeys. `evalValue` is what actually gets
+  // appended to the (eval-safe) input — '^' becomes JS '**', '√' opens a
+  // 'Math.sqrt(' call — everything else is used to reuse phone-calc-btn styling.
+  var EXTRA_KEY_DEFS = {
+    '.': { label: '.', evalValue: '.', aria: 'decimal point' },
+    '(': { label: '(', evalValue: '(', aria: 'open bracket' },
+    ')': { label: ')', evalValue: ')', aria: 'close bracket' },
+    '±': { label: '±', fn: true, aria: 'toggle sign', negate: true },
+    '^': { label: '^', evalValue: '**', op: true, aria: 'power' },
+    '√': { label: '√', evalValue: 'Math.sqrt(', op: true, aria: 'square root' }
+  };
+
   // ── Calculator buttons (rebuilt per level) ────────────
   p.makeCalcButtons = function() {
     displayWrap.html('');
     gridWrap.html('');
+    keyButtons = {};
 
     // Display input
     p.calcButtons.push(
@@ -87,36 +107,60 @@ var sceneCalculator = function(p) {
     );
 
     var keyDefs = [
-      { label: '7' }, { label: '8' }, { label: '9' }, { label: '÷', op: true, aria: 'divide' },
-      { label: '4' }, { label: '5' }, { label: '6' }, { label: '×', op: true, aria: 'multiply' },
-      { label: '1' }, { label: '2' }, { label: '3' }, { label: '−', op: true, aria: 'minus' },
-      { label: 'CE', fn: true, aria: 'clear' }, { label: '0' }, { label: '=', eq: true, aria: 'equals' }, { label: '+', op: true, aria: 'plus' }
+      { label: '7', key: '7' }, { label: '8', key: '8' }, { label: '9', key: '9' }, { label: '÷', key: '/', evalValue: '/', op: true, aria: 'divide' },
+      { label: '4', key: '4' }, { label: '5', key: '5' }, { label: '6', key: '6' }, { label: '×', key: '*', evalValue: '*', op: true, aria: 'multiply' },
+      { label: '1', key: '1' }, { label: '2', key: '2' }, { label: '3', key: '3' }, { label: '−', key: '-', evalValue: '-', op: true, aria: 'minus' },
+      { label: 'CE', key: 'CE', fn: true, aria: 'clear' }, { label: '0', key: '0' }, { label: '=', key: '=', eq: true, aria: 'equals' }, { label: '+', key: '+', evalValue: '+', op: true, aria: 'plus' }
     ];
 
+    (p.extraKeys || []).forEach(function(k) {
+      var def = EXTRA_KEY_DEFS[k];
+      if (def) keyDefs.push(Object.assign({ key: k }, def));
+    });
+
     keyDefs.forEach(function(def) {
+      if (def.evalValue === undefined && def.key !== 'CE' && def.key !== '=' && !def.negate) {
+        def.evalValue = def.key; // digits, plain symbols: append themselves
+      }
+
       var btn = p.createButton(def.label)
         .addClass('phone-calc-btn')
         .parent(gridWrap)
         .attribute('aria-label', def.aria || def.label);
       if (def.op || def.eq) btn.addClass('phone-calc-btn-op');
       if (def.fn) btn.addClass('phone-calc-btn-fn');
-      p.calcButtons.push(btn);
-    });
 
-    // Wire up input behaviour
-    // buttons index mapping: 0=input, 1=7,2=8,3=9,4=/, 5=4,6=5,7=6,8=*, 9=1,10=2,11=3,12=-, 13=CE,14=0,15==,16=+
-    for (var i = 1; i <= 16; i++) {
-      p.calcButtons[i].mousePressed(add);
-    }
-    p.calcButtons[13].mousePressed(zeroed);
-    p.calcButtons[15].mousePressed(equals);
+      if (def.eq) {
+        btn.mousePressed(equals);
+      } else if (def.key === 'CE') {
+        btn.mousePressed(zeroed);
+      } else if (def.negate) {
+        btn.mousePressed(negate);
+      } else {
+        btn.mousePressed(appendValue(def.evalValue));
+      }
+
+      p.calcButtons.push(btn);
+      keyButtons[def.key] = btn;
+    });
   };
 
-  function add() {
-    // Map display characters back to eval-safe operators
-    var label = this.html();
-    var val = label === '÷' ? '/' : label === '×' ? '*' : label === '−' ? '-' : label;
-    p.calcInput.value(p.calcInput.value() + val);
+  function appendValue(val) {
+    return function() {
+      p.calcInput.value(p.calcInput.value() + val);
+    };
+  }
+
+  // '±' only starts a new negative number (input empty, or right after an
+  // operator/open-bracket) rather than toggling the sign of whatever's
+  // already typed — enough to let players write e.g. "6+-3" when the
+  // '-' key itself is broken, without the ambiguity of guessing whether a
+  // trailing '-' already in the string is an operator or a sign.
+  function negate() {
+    var v = p.calcInput.value();
+    if (v === '' || /[+\-*/^(]$/.test(v)) {
+      p.calcInput.value(v + '-');
+    }
   }
 
   function zeroed() {
@@ -138,7 +182,7 @@ var sceneCalculator = function(p) {
       zeroed();
       updateScoreBar();
       if (p.score === 3) {
-        localStorage.setItem('level' + p.level, true);
+        localStorage.setItem(p.storageKey || ('level' + p.level), true);
         showCongrats();
       }
     } else {
@@ -161,14 +205,11 @@ var sceneCalculator = function(p) {
   function donothing() {}
 
   // ── Broken keys ──────────────────────────────────────
-  // Index mapping to key label for brokenKeys lookup:
-  var keyMap = [null,'7','8','9','/','4','5','6','*','1','2','3','-',null,'0',null,'+'];
-
   p.makeBrokenKeys = function() {
-    for (var i = 1; i <= 16; i++) {
-      var k = keyMap[i];
-      if (k && p.brokenKeys.indexOf(k) !== -1) {
-        p.calcButtons[i]
+    Object.keys(keyButtons).forEach(function(k) {
+      if (k === 'CE' || k === '=') return; // never breakable
+      if (p.brokenKeys.indexOf(k) !== -1) {
+        keyButtons[k]
           .removeClass('phone-calc-btn-op')
           .removeClass('phone-calc-btn-fn')
           .addClass('phone-calc-btn-broken')
@@ -177,7 +218,7 @@ var sceneCalculator = function(p) {
           .attribute('disabled', '')
           .mousePressed(donothing);
       }
-    }
+    });
   };
 
   // ── Congrats overlay ─────────────────────────────────
@@ -197,7 +238,11 @@ var sceneCalculator = function(p) {
   function hideCongrats() {
     var overlay = document.getElementById('congratsOverlay');
     if (overlay) overlay.classList.remove('active');
-    changeLevels();
+    if (p.onComplete) {
+      p.onComplete();
+    } else {
+      changeLevels();
+    }
   }
 
   // ── Auto advance ─────────────────────────────────────
@@ -212,7 +257,7 @@ var sceneCalculator = function(p) {
   }
 
   function back() {
-    document.getElementById('levelsScreen').style.display = 'block';
+    document.getElementById(p.backTarget || 'levelsScreen').style.display = 'block';
     document.getElementById('calculatorScreen').style.display = 'none';
   }
 };

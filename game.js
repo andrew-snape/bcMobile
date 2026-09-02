@@ -6,9 +6,91 @@ var tutorialScreen = new p5(sceneTutorial, "tutorialScreen");
 var calcScreen = new p5(sceneCalculator, "calculatorScreen");
 var sciScreen = new p5(sceneScientificCalculator, "scientificScreen");
 var warmupScreen = new p5(sceneWarmup, "warmupScreen");
+var challengeHubScreen = new p5(sceneChallengeHub, "challengeHubScreen");
+var challengeLevelsScreen = new p5(sceneChallengeLevels, "challengeLevelsScreen");
+
+// ── Challenge Packs ─────────────────────────────────────
+// Harder levels layered on top of the original 36, grouped by the maths
+// content they exercise (not by year level) per curriculum research:
+// decimals/fractions, negatives + order of operations (BODMAS), indices/roots.
+var challengeLevels = {
+  fractions: {
+    title: 'Fractions & Decimals',
+    description: "Hit exact decimal targets — sometimes without the decimal point key at all.",
+    levels: [
+      { brokenKeys: ['.'],         target: 2.5,  extraKeys: ['.'] },
+      { brokenKeys: ['5'],         target: 0.5,  extraKeys: ['.'] },
+      { brokenKeys: ['4','2'],     target: 0.25, extraKeys: ['.'] },
+      { brokenKeys: ['3','.'],     target: 1.5,  extraKeys: ['.'] },
+      { brokenKeys: ['7','.'],     target: 3.5,  extraKeys: ['.'] },
+      { brokenKeys: ['9','.'],     target: 4.5,  extraKeys: ['.'] },
+      { brokenKeys: ['5','.'],     target: 12.5, extraKeys: ['.'] },
+      { brokenKeys: ['4','3','.'], target: 0.75, extraKeys: ['.'] }
+    ]
+  },
+  negatives: {
+    title: 'Negatives & Order of Operations',
+    description: 'Brackets and negative numbers change everything — BODMAS in action.',
+    levels: [
+      { brokenKeys: ['-'],     target: -6,  extraKeys: ['(',')','±'] },
+      { brokenKeys: ['-'],     target: -12, extraKeys: ['(',')','±'] },
+      { brokenKeys: ['2','0'], target: 20,  extraKeys: ['(',')','±'] },
+      { brokenKeys: ['4','5'], target: 45,  extraKeys: ['(',')','±'] },
+      { brokenKeys: ['-'],     target: -20, extraKeys: ['(',')','±'] },
+      { brokenKeys: ['6','0'], target: 60,  extraKeys: ['(',')','±'] },
+      { brokenKeys: ['-','8'], target: -8,  extraKeys: ['(',')','±'] },
+      { brokenKeys: ['1'],     target: 100, extraKeys: ['(',')','±'] }
+    ]
+  },
+  indices: {
+    title: 'Indices & Roots',
+    description: "Powers and square roots unlock numbers you can't reach any other way.",
+    levels: [
+      { brokenKeys: ['+','-','*','3'],     target: 3,  extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['+','-','*','4'],     target: 4,  extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['6','4'],             target: 64, extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['2','5'],             target: 25, extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['+','-','*','8'],     target: 8,  extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['3','9'],             target: 9,  extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['1','6'],             target: 16, extraKeys: ['(',')','^','√'] },
+      { brokenKeys: ['+','-','*','4','9'], target: 49, extraKeys: ['(',')','^','√'] }
+    ]
+  }
+};
+
+function startChallengeLevel(tierKey, index) {
+  var tier = challengeLevels[tierKey];
+  var cfg = tier.levels[index - 1];
+
+  calcScreen.calcButtons = [];
+  calcScreen.clearMoveHistory();
+  calcScreen.level = index;
+  calcScreen.levelLabel = tier.title + ' · ' + index + '/' + tier.levels.length;
+  calcScreen.storageKey = 'challenge_' + tierKey + '_' + index;
+  calcScreen.brokenKeys = cfg.brokenKeys;
+  calcScreen.target = cfg.target;
+  calcScreen.extraKeys = cfg.extraKeys;
+  calcScreen.score = 0;
+  calcScreen.backTarget = 'challengeLevelsScreen';
+  calcScreen.onComplete = function() {
+    if (index < tier.levels.length) {
+      startChallengeLevel(tierKey, index + 1);
+    } else {
+      document.getElementById('calculatorScreen').style.display = 'none';
+      document.getElementById('challengeLevelsScreen').style.display = 'block';
+    }
+  };
+  calcScreen.makeCalcButtons();
+  calcScreen.makeBrokenKeys();
+}
 
 function level1(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 1;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["8"];
@@ -20,6 +102,11 @@ function level1(){
 
 var level2 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 2;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1"];
@@ -30,6 +117,11 @@ var level2 = function(){
 }
 var level3 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 3;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1"];
@@ -40,6 +132,11 @@ var level3 = function(){
 }
 var level4 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 4;
   calcScreen.clearMoveHistory();
   calcScreen.displayEndMessage = false;
@@ -51,6 +148,11 @@ var level4 = function(){
 }
 var level5 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 5;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1"];
@@ -61,6 +163,11 @@ var level5 = function(){
 }
 var level6 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 6;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["3"];
@@ -71,6 +178,11 @@ var level6 = function(){
 }
 var level7 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 7;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["4", "0"];
@@ -81,6 +193,11 @@ var level7 = function(){
 }
 var level8 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 8;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2", "0"];
@@ -91,6 +208,11 @@ var level8 = function(){
 }
 var level9 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 9;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","3","0"];
@@ -101,6 +223,11 @@ var level9 = function(){
 }
 var level10 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 10;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2","5"];
@@ -112,6 +239,11 @@ var level10 = function(){
 
 var level11 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 11;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","3","4", "6"];
@@ -122,6 +254,11 @@ var level11 = function(){
 }
 var level12 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 12;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","3","4", "7"];
@@ -132,6 +269,11 @@ var level12 = function(){
 }
 var level13 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 13;
   calcScreen.brokenKeys = ["1","2","5","+"];
   calcScreen.target = 10;
@@ -141,6 +283,11 @@ var level13 = function(){
 }
 var level14 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 14;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["7","5", "*"];
@@ -151,6 +298,11 @@ var level14 = function(){
 }
 var level15 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 15;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2","5", "-"];
@@ -161,6 +313,11 @@ var level15 = function(){
 }
 var level16 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 16;
   calcScreen.brokenKeys = ["3","7","*"];
   calcScreen.target = 25;
@@ -170,6 +327,11 @@ var level16 = function(){
 }
 var level17 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 17;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["4","6", "*"];
@@ -180,6 +342,11 @@ var level17 = function(){
 }
 var level18 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 18;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["7","6","9", "/"];
@@ -190,6 +357,11 @@ var level18 = function(){
 }
 var level19 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 19;
   calcScreen.brokenKeys = ["3","4","5","*"];
   calcScreen.target = 15;
@@ -199,6 +371,11 @@ var level19 = function(){
 }
 var level20 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 20;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["9","5", "*","+"];
@@ -209,6 +386,11 @@ var level20 = function(){
 }
 var level21 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 21;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","5"];
@@ -219,6 +401,11 @@ var level21 = function(){
 }
 var level22 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 22;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["3","7","5", "-"];
@@ -229,6 +416,11 @@ var level22 = function(){
 }
 var level23 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 23;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["9","7","3"];
@@ -239,6 +431,11 @@ var level23 = function(){
 }
 var level24 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 24;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["3","9", "-"];
@@ -249,6 +446,11 @@ var level24 = function(){
 }
 var level25 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 25;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["4","9", "*"];
@@ -259,6 +461,11 @@ var level25 = function(){
 }
 var level26 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 26;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2","8", "-"];
@@ -269,6 +476,11 @@ var level26 = function(){
 }
 var level27 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 27;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2","9", "-"];
@@ -279,6 +491,11 @@ var level27 = function(){
 }
 var level28 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 28;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["2","5", "-"];
@@ -289,6 +506,11 @@ var level28 = function(){
 }
 var level29 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 29;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","2","5", "-"];
@@ -299,6 +521,11 @@ var level29 = function(){
 }
 var level30 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 30;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["3","7","5", "/"];
@@ -309,6 +536,11 @@ var level30 = function(){
 }
 var level31 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 31;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","4","9", "-"];
@@ -319,6 +551,11 @@ var level31 = function(){
 }
 var level32 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 32;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["8","5","*"];
@@ -329,6 +566,11 @@ var level32 = function(){
 }
 var level33 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 33;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["3","2","0", "-"];
@@ -339,6 +581,11 @@ var level33 = function(){
 }
 var level34 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 34;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","9","8", "*"];
@@ -349,6 +596,11 @@ var level34 = function(){
 }
 var level35 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 35;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["2","4", "6"];
@@ -359,6 +611,11 @@ var level35 = function(){
 }
 var level36 = function(){
   calcScreen.calcButtons = [];
+  calcScreen.extraKeys = [];
+  calcScreen.storageKey = null;
+  calcScreen.levelLabel = null;
+  calcScreen.onComplete = null;
+  calcScreen.backTarget = null;
   calcScreen.level = 36;
   calcScreen.clearMoveHistory();
   calcScreen.brokenKeys = ["1","3","5", "7"];
